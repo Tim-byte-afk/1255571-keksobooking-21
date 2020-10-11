@@ -2,81 +2,88 @@
 
 const QUANTITY_ARRAYS = 8;
 
-const typeList = {
-  "1": `palace`,
-  "2": `flat`,
-  "3": `house`,
-  "4": `bungalow`
-};
+const OFFER_TYPES = [
+  `palace`,
+  `flat`,
+  `house`,
+  `bungalow`
+];
 
-const timeList = {
-  "1": `12:00`,
-  "2": `13:00`,
-  "3": `14:00`
-};
+const TIMES = [
+  `12:00`,
+  `13:00`,
+  `14:00`
+];
 
-const optionsList = {
-  "1": `wifi`,
-  "2": `dishwasher`,
-  "3": `parking`,
-  "4": `washer`,
-  "5": `elevator`,
-  "6": `conditioner`
-};
+const FEATURES = [
+  `wifi`,
+  `dishwasher`,
+  `parking`,
+  `washer`,
+  `elevator`,
+  `conditioner`
+];
 
-const photoList = {
-  "1": `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
-  "2": `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
-  "3": `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
-};
+const PHOTOS = [
+  `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
+  `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
+  `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
+];
 
-const getRandomOptions = function (num) {
-  const arrayOptions = [];
-  for (let i = 0; i <= num; i++) {
-    arrayOptions.push(optionsList[getRandomNumber(1, num)]);
+const getRandomArray = function shuffle(array, num) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const randomNumber = Math.floor(Math.random() * (i + 1));
+    [array[randomNumber], array[i]] = [array[i], array[randomNumber]];
   }
 
-  return arrayOptions;
-};
+  const randomFixArray = array.slice(0, num + 1);
 
-const getRandomPhoto = function (num) {
-  const arrayPhoto = [];
-  for (let i = 0; i <= num; i++) {
-    arrayPhoto.push(photoList[getRandomNumber(1, num)]);
-  }
-
-  return arrayPhoto;
+  return randomFixArray;
 };
 
 const getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
 };
 
+const MIN_PRICE = 1;
+const MAX_PRICE = 999;
+
+const MIN_Y_LOCATION = 130; // Согласно заданию
+const MAX_Y_LOCATION = 630;
+
+const MAP = document.querySelector(`.map`);
+const MAP_WIDTH = MAP.offsetWidth;
+
 const mockGeneration = function (quantity) {
   const mockArray = [];
-  for (let i = 1; i <= quantity; i++) {
+  for (let i = 0; i < quantity; i++) {
+    const count = i + 1;
+    const avatarNumber = count > 9 ? count : `0` + count;
+    const locationX = getRandomNumber(1, MAP_WIDTH);
+    const locationY = getRandomNumber(MIN_Y_LOCATION, MAX_Y_LOCATION);
+
     const mockObj = {
       "author": {
-        "avatar": `img/avatars/user` + (i > 9 ? i : `0` + i) + `.png`
+        "avatar": `img/avatars/user` + avatarNumber + `.png`
       },
       "offer": {
         "title": `Тестовый заголовок`,
-        "address": location.x + `, ` + location.y,
-        "price": getRandomNumber(1, 999),
-        "type": typeList[getRandomNumber(1, 4)],
+        "address": locationX + `, ` + locationY,
+        "price": getRandomNumber(MIN_PRICE, MAX_PRICE),
+        "type": OFFER_TYPES[getRandomNumber(0, OFFER_TYPES.length - 1)],
         "rooms": getRandomNumber(1, 6),
         "guests": getRandomNumber(1, 9),
-        "checkin": timeList[getRandomNumber(1, 4)],
-        "checkout": timeList[getRandomNumber(1, 4)],
-        "features": getRandomOptions(getRandomNumber(1, 6)),
+        "checkin": TIMES[getRandomNumber(0, TIMES.length - 1)],
+        "checkout": TIMES[getRandomNumber(0, TIMES.length - 1)],
+        "features": getRandomArray(FEATURES, getRandomNumber(1, FEATURES.length - 1)),
         "description": `Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.
         Вдали от всех живут они в буквенных домах на берегу Семантика большого языкового океана.
         Маленький ручеек Даль журчит по всей стране и обеспечивает ее всеми необходимыми правилами.`,
-        "photos": getRandomPhoto(getRandomNumber(1, 3)),
+        "photos": getRandomArray(PHOTOS, getRandomNumber(1, PHOTOS.length - 1)),
       },
       "location": {
-        "x": getRandomNumber(1, document.querySelector(`.map`).offsetWidth),
-        "y": getRandomNumber(130, 630),
+        "x": locationX,
+        "y": locationY,
       }
     };
 
@@ -91,35 +98,32 @@ const deleteClass = function (mainClass, delClass) {
   someClass.classList.remove(delClass);
 };
 
-const makeElement = function (tagName, className, text) {
-  const element = document.createElement(tagName);
-  if (className) {
-    element.classList.add(className);
-  }
-  if (text) {
-    element.textContent = text;
-  }
-  return element;
-};
+const pinsContainer = document.querySelector(`.map__pins`);
+const pinTemplate = document.querySelector(`#pin`).content;
+const mapPin = pinTemplate.querySelector(`.map__pin`);
+
+const pinWidth = 50;
+const pinHeight = 70;
 
 const addPins = function (array) {
   const fragment = document.createDocumentFragment();
-  const listItems = document.querySelector(`.map__pins`);
 
   for (let i = 0; i < array.length; i++) {
-    const mapPin = makeElement(`button`, `map__pin`);
-    mapPin.style = `left: ` + array[i].location.x + `px; top: ` + array[i].location.y + `px;`;
-    fragment.appendChild(mapPin);
+    const locationX = array[i].location.x - (pinWidth / 2);
+    const locationY = array[i].location.y - pinHeight;
 
-    const mapImg = makeElement(`img`);
+    const mapPinCopy = mapPin.cloneNode(true);
+
+    mapPinCopy.style = `left: ` + locationX + `px; top: ` + locationY + `px;`;
+    fragment.appendChild(mapPinCopy);
+
+    const mapImg = mapPinCopy.querySelector(`img`);
     mapImg.src = array[i].author.avatar;
     mapImg.alt = array[i].offer.title;
-    mapImg.width = `40`;
-    mapImg.height = `44`;
-    mapPin.appendChild(mapImg);
+    mapPinCopy.appendChild(mapImg);
 
   }
-  listItems.appendChild(fragment);
+  pinsContainer.appendChild(fragment);
 };
 
 deleteClass(`.map`, `map--faded`);
