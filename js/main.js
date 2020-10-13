@@ -2,6 +2,15 @@
 
 const QUANTITY_ARRAYS = 8;
 
+const MIN_PRICE = 1;
+const MAX_PRICE = 999;
+
+const MIN_Y_LOCATION = 130; // Согласно заданию
+const MAX_Y_LOCATION = 630;
+
+const map = document.querySelector(`.map`);
+const MAP_WIDTH = map.offsetWidth;
+
 const OFFER_TYPES = [
   `palace`,
   `flat`,
@@ -45,15 +54,6 @@ const getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
 };
 
-const MIN_PRICE = 1;
-const MAX_PRICE = 999;
-
-const MIN_Y_LOCATION = 130; // Согласно заданию
-const MAX_Y_LOCATION = 630;
-
-const MAP = document.querySelector(`.map`);
-const MAP_WIDTH = MAP.offsetWidth;
-
 const mockGeneration = function (quantity) {
   const mockArray = [];
   for (let i = 0; i < quantity; i++) {
@@ -67,7 +67,7 @@ const mockGeneration = function (quantity) {
         "avatar": `img/avatars/user` + avatarNumber + `.png`
       },
       "offer": {
-        "title": `Тестовый заголовок`,
+        "title": `Шикарное нечто`,
         "address": locationX + `, ` + locationY,
         "price": getRandomNumber(MIN_PRICE, MAX_PRICE),
         "type": OFFER_TYPES[getRandomNumber(0, OFFER_TYPES.length - 1)],
@@ -126,6 +126,94 @@ const addPins = function (array) {
   pinsContainer.appendChild(fragment);
 };
 
+const cardTemplate = document.querySelector(`#card`).content;
+const mapPopup = cardTemplate.querySelector(`.popup`);
+const filtersContainer = document.querySelector(`.map__filters-container`);
+
+const addCard = function (element) {
+  const capacityValue = (element.offer.rooms === 1 ? element.offer.rooms + ` комната для ` : element.offer.rooms + ` комнаты для `)
+   + (element.offer.guests === 1 ? element.offer.guests + ` гостя.` : element.offer.guests + ` гостей.`);
+
+  let typeOfHousing = ``;
+  if (element.offer.type === `flat`) {
+    typeOfHousing = `Квартира`;
+  } else if (element.offer.type === `bungalow`) {
+    typeOfHousing = `Бунгало`;
+  } else if (element.offer.type === `house`) {
+    typeOfHousing = `Дом`;
+  } else if (element.offer.type === `palace`) {
+    typeOfHousing = `Дворец`;
+  }
+
+  const fragment = document.createDocumentFragment();
+  const mapPopupCopy = mapPopup.cloneNode(true);
+
+  fragment.appendChild(mapPopupCopy);
+
+  const popupImg = mapPopupCopy.querySelector(`img`);
+  popupImg.src = element.author.avatar;
+  mapPopupCopy.appendChild(popupImg);
+
+  const popupTitle = mapPopupCopy.querySelector(`.popup__title`);
+  popupTitle.textContent = element.offer.title;
+  mapPopupCopy.appendChild(popupTitle);
+
+  const popupAdress = mapPopupCopy.querySelector(`.popup__text--address`);
+  popupAdress.textContent = element.offer.address;
+  mapPopupCopy.appendChild(popupAdress);
+
+  const popupPrice = mapPopupCopy.querySelector(`.popup__text--price`);
+  popupPrice.textContent = element.offer.price + `₽/ночь`;
+  mapPopupCopy.appendChild(popupPrice);
+
+  const popupType = mapPopupCopy.querySelector(`.popup__type`);
+  popupType.textContent = typeOfHousing;
+  mapPopupCopy.appendChild(popupType);
+
+  const popupCapacity = mapPopupCopy.querySelector(`.popup__text--capacity`);
+  popupCapacity.textContent = capacityValue;
+  mapPopupCopy.appendChild(popupCapacity);
+
+  const popupTime = mapPopupCopy.querySelector(`.popup__text--time`);
+  popupTime.textContent = `Заезд после ` + element.offer.checkin + `, выезд до ` + element.offer.checkout;
+  mapPopupCopy.appendChild(popupTime);
+
+  const popupDescription = mapPopupCopy.querySelector(`.popup__description`);
+  popupDescription.textContent = element.offer.description;
+  mapPopupCopy.appendChild(popupDescription);
+
+
+  const popupFeatures = mapPopupCopy.querySelector(`.popup__features`);
+  const popupFeature = popupFeatures.querySelectorAll(`.popup__feature`);
+  const popupFeatureMain = popupFeatures.querySelector(`.popup__feature--wifi`);
+  popupFeatureMain.classList.remove(`popup__feature--wifi`);
+
+  for (const featureList of popupFeature) {
+    featureList.remove();
+  }
+  for (const featureObj of element.offer.features) {
+    const tmpFeature = popupFeatureMain.cloneNode(true);
+    tmpFeature.classList.add(`popup__feature--` + featureObj);
+    popupFeatures.appendChild(tmpFeature);
+  }
+  popupFeatureMain.remove();
+  mapPopupCopy.appendChild(popupFeatures);
+
+  const popupPhotos = mapPopupCopy.querySelector(`.popup__photos`);
+  const popupPhoto = popupPhotos.querySelector(`.popup__photo`);
+  for (const photo of element.offer.photos) {
+    const clonePhoto = popupPhoto.cloneNode(true);
+    clonePhoto.src = photo;
+    popupPhotos.appendChild(clonePhoto);
+  }
+  popupPhoto.remove();
+  mapPopupCopy.appendChild(popupPhotos);
+
+  map.insertBefore(fragment, filtersContainer);
+};
+
+const mockData = mockGeneration(QUANTITY_ARRAYS);
 deleteClass(`.map`, `map--faded`);
-addPins(mockGeneration(QUANTITY_ARRAYS));
+addPins(mockData);
+addCard(mockData[0]);
 
