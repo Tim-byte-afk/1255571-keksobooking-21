@@ -59,7 +59,9 @@ const getRandomArray = function (array, num) {
 };
 
 const getRandomNumber = function (min, max) {
-  return Math.round(Math.random() * (max - min) + min);
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 };
 
 const map = document.querySelector(`.map`);
