@@ -448,13 +448,8 @@ formTimeOut.addEventListener(`change`, function () {
 });
 
 const eventListenersList = () => {
-  // pinsContainer.addEventListener(`click`, function (evt) {   //  Вот тут срабатывает событие клик при нажатии enter, не разобрался почему.
-  //   openPopup(evt);
-  // });
-  pinsContainer.addEventListener(`keydown`, function (evt) {
-    if (evt.key === `Enter`) {
-      openPopup(evt);
-    }
+  pinsContainer.addEventListener(`click`, function (evt) {
+    openPopup(evt);
   });
 };
 
