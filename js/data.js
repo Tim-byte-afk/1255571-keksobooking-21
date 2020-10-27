@@ -102,6 +102,8 @@
 
   window.data = {
     mock: mockData,
-    OFFER_TYPES
+    OFFER_TYPES,
+    MIN_Y_LOCATION,
+    MAX_Y_LOCATION
   };
 })();

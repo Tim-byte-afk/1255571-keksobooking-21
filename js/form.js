@@ -23,6 +23,43 @@
   formTitle.setAttribute(`maxlength`, MAX_TITLE_LENGTH);
   formPrice.setAttribute(`max`, MAX_PRICE_FORM);
 
+  const adForm = document.querySelector(`.ad-form`);
+  const fieldsetList = adForm.querySelectorAll(`fieldset`);
+
+  const enableList = function (elementList) {
+    for (let element of elementList) {
+      element.removeAttribute(`disabled`);
+    }
+  };
+
+  const mapFilters = document.querySelector(`.map__filters`);
+  const filterSelect = mapFilters.querySelectorAll(`select, fieldset`);
+
+  const disableList = function (elementList) {
+    for (let element of elementList) {
+      element.setAttribute(`disabled`, `true`);
+    }
+  };
+
+  const deactivatePage = function () {
+    disableList(fieldsetList);
+    disableList(filterSelect);
+  };
+
+  const activatePage = function () {
+    window.map.element.classList.remove(`map--faded`);
+    adForm.classList.remove(`ad-form--disabled`);
+
+    enableList(fieldsetList);
+    enableList(filterSelect);
+    window.map.inputAddress.setAttribute(`disabled`, `true`);
+    window.map.inputAddress.value = getCoordinate(window.map.mainElementPin, true);
+    window.pin.create(window.data.mock);
+    window.form.validateGuestsAndRooms(window.form.housingGuests, window.form.housingRooms);
+    window.form.setPlaceholderForPrice();
+    window.map.eventListenersList();
+  };
+
   const getCoordinate = function (someElement, isBottom) {
     const x = Number(someElement.offsetLeft);
     const y = Number(someElement.offsetTop);
@@ -89,7 +126,10 @@
     validateGuestsAndRooms,
     setPlaceholderForPrice,
     getCoordinate,
+    activatePage,
+    deactivatePage,
     housingRooms,
-    housingGuests
+    housingGuests,
+    fieldsetList,
   };
 })();

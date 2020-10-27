@@ -29,5 +29,8 @@
     pinsContainer.appendChild(fragment);
   };
 
-  window.pin = create;
+  window.pin = {
+    elementWidth: PIN_WIDTH,
+    create,
+  };
 })();

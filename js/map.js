@@ -42,9 +42,87 @@
     document.removeEventListener(`keydown`, onPopupEscPress);
   };
 
+  const mainMapPin = document.querySelector(`.map__pin--main`);
+  const inputAddress = document.querySelector(`#address`);
+  inputAddress.value = window.form.getCoordinate(mainMapPin);
+
+  mainMapPin.addEventListener(`mousedown`, function (evt) {
+    if (typeof evt === `object`) {
+      switch (evt.button) {
+        case 0:
+          window.form.activatePage();
+          movePin(evt);
+          break;
+      }
+    }
+  });
+
+  mainMapPin.addEventListener(`keydown`, function (evt) {
+    if (evt.key === `Enter`) {
+      window.form.activatePage();
+    }
+  });
+
+
+  const movePin = (evt) => {
+    evt.preventDefault();
+
+    let startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    const onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      let shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      let y = (mainMapPin.offsetTop - shift.y);
+      let x = (mainMapPin.offsetLeft - shift.x);
+
+      if (y < window.data.MIN_Y_LOCATION) {
+        y = window.data.MIN_Y_LOCATION;
+      } else if (y > window.data.MAX_Y_LOCATION) {
+        y = window.data.MAX_Y_LOCATION;
+      }
+
+      if (x < 0 - window.pin.elementWidth / 2) {
+        x = 0 - window.pin.elementWidth / 2;
+      } else if (x > pinsContainer.offsetWidth - window.pin.elementWidth / 2) {
+        x = pinsContainer.offsetWidth - window.pin.elementWidth / 2;
+      }
+
+      mainMapPin.style.top = y + `px`;
+      mainMapPin.style.left = x + `px`;
+      inputAddress.value = window.form.getCoordinate(mainMapPin, true);
+    };
+
+    const onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener(`mousemove`, onMouseMove);
+      document.removeEventListener(`mouseup`, onMouseUp);
+      inputAddress.value = window.form.getCoordinate(mainMapPin, true);
+    };
+
+    document.addEventListener(`mousemove`, onMouseMove);
+    document.addEventListener(`mouseup`, onMouseUp);
+  };
+
   window.map = {
     element: map,
+    mainElementPin: mainMapPin,
     elementWidth: mapWidth,
-    eventListenersList
+    elementContainer: pinsContainer,
+    eventListenersList,
+    inputAddress
   };
 })();
