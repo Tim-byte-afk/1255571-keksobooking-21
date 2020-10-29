@@ -54,7 +54,6 @@
     enableList(filterSelect);
     window.map.inputAddress.setAttribute(`disabled`, `true`);
     window.map.inputAddress.value = getCoordinate(window.map.mainElementPin, true);
-    window.pin.create(window.data.mock);
     window.form.validateGuestsAndRooms(window.form.housingGuests, window.form.housingRooms);
     window.form.setPlaceholderForPrice();
     window.map.eventListenersList();
@@ -104,14 +103,8 @@
     housingRooms.reportValidity();
   });
 
-  formPrice.addEventListener(`input`, function () {
-    // validatePrice();
-    // validateTypeOfHousing();
-  });
-
   formTypeOfHousing.addEventListener(`change`, function () {
     setPlaceholderForPrice();
-    // validateTypeOfHousing();
   });
 
   formTimeIn.addEventListener(`change`, function () {

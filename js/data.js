@@ -98,12 +98,15 @@
     return mockArray;
   };
 
+  let response;
+
   const mockData = create(QUANTITY_ARRAYS);
 
   window.data = {
     mock: mockData,
     OFFER_TYPES,
     MIN_Y_LOCATION,
-    MAX_Y_LOCATION
+    MAX_Y_LOCATION,
+    response
   };
 })();
