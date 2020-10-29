@@ -5,12 +5,12 @@
   const mapPopup = cardTemplate.querySelector(`.popup`);
   const filtersContainer = document.querySelector(`.map__filters-container`);
 
-  const create = function (offerData) {
+  const createCard = function (offerData, parentContainer) {
     const rooms = offerData.offer.rooms + ` ` + window.util.declOfNum(offerData.offer.rooms, [`комната`, `комнаты`, `комнат`]);
     const guests = offerData.offer.guests + ` ` + window.util.declOfNum(offerData.offer.guests, [`гостя`, `гостей`, `гостей`]) + `.`;
     const capacityValue = rooms + ` для ` + guests;
 
-    const typeOfHousing = window.data.OFFER_TYPES[offerData.offer.type];
+    const typeOfHousing = window.data.OFFER_TYPES[offerData.offer.type].label;
 
     const fragment = document.createDocumentFragment();
     const mapPopupCopy = mapPopup.cloneNode(true);
@@ -100,8 +100,8 @@
     }
 
     fragment.appendChild(mapPopupCopy);
-    window.map.element.insertBefore(fragment, filtersContainer);
+    parentContainer.insertBefore(fragment, filtersContainer);
   };
 
-  window.card = create;
+  window.createCard = createCard;
 })();

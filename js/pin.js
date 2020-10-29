@@ -1,8 +1,8 @@
 'use strict';
 
 (() => {
-  const PIN_WIDTH = 50;
-  const PIN_HEIGHT = 70;
+  const PIN_WIDTH = 65;
+  const PIN_HEIGHT = 87;
   const pinTemplate = document.querySelector(`#pin`).content;
   const mapPin = pinTemplate.querySelector(`.map__pin`);
   const pinsContainer = document.querySelector(`.map__pins`);
@@ -11,6 +11,7 @@
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < array.length; i++) {
+      const count = i + 1;
       const targetOffer = array[i];
       const locationX = targetOffer.location.x - (PIN_WIDTH / 2);
       const locationY = targetOffer.location.y - PIN_HEIGHT;
@@ -18,7 +19,7 @@
       const mapPinCopy = mapPin.cloneNode(true);
 
       mapPinCopy.style = `left: ` + locationX + `px; top: ` + locationY + `px;`;
-      mapPinCopy.dataset.id = targetOffer.id;
+      mapPinCopy.dataset.id = count;
       fragment.appendChild(mapPinCopy);
 
       const mapImg = mapPinCopy.querySelector(`img`);
@@ -31,6 +32,7 @@
 
   window.pin = {
     elementWidth: PIN_WIDTH,
+    elementHeight: PIN_HEIGHT,
     create,
   };
 })();

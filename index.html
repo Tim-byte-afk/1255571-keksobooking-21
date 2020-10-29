@@ -247,7 +247,17 @@
       <button class="error__button">Попробовать снова</button>
     </div>
   </template>
+
+  <!-- Сообщение об ошибке при активации страницы -->
+  <template id="data-error">
+    <div class="error">
+      <p class="error__message">Возникла ошибка при получении данных от сервера.</p>
+      <button class="error__button error__my">ОК :(</button>
+    </div>
+  </template>
 <script src="js/util.js"></script>
+<script src="js/errorPopup.js"></script>
+<script src="js/loadData.js"></script>
 <script src="js/data.js"></script>
 <script src="js/pin.js"></script>
 <script src="js/card.js"></script>

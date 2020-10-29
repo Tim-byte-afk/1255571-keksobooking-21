@@ -23,12 +23,13 @@
 
     if (pin) {
       const pinId = pin.dataset.id;
-      const targetOffer = window.data.mock.find((offer) => String(offer.id) === String(pinId));
+      const targetOffer = window.data.response.find((offer, index) => String(index) === String(pinId - 1));
       const popupToClose = window.map.element.querySelector(`.map__card`);
       if (popupToClose) {
         popupToClose.remove();
       }
-      window.card(targetOffer);
+      console.log(targetOffer);
+      window.createCard(targetOffer, map);
       window.map.element.querySelector(`.popup__close`).addEventListener(`click`, function () {
         closePopup();
       });
@@ -50,7 +51,7 @@
     if (typeof evt === `object`) {
       switch (evt.button) {
         case 0:
-          window.form.activatePage();
+          window.loadData();
           movePin(evt);
           break;
       }
@@ -88,10 +89,10 @@
       let y = (mainMapPin.offsetTop - shift.y);
       let x = (mainMapPin.offsetLeft - shift.x);
 
-      if (y < window.data.MIN_Y_LOCATION) {
-        y = window.data.MIN_Y_LOCATION;
-      } else if (y > window.data.MAX_Y_LOCATION) {
-        y = window.data.MAX_Y_LOCATION;
+      if (y < window.data.MIN_Y_LOCATION - window.pin.elementHeight) {
+        y = window.data.MIN_Y_LOCATION - window.pin.elementHeight;
+      } else if (y > window.data.MAX_Y_LOCATION - window.pin.elementHeight) {
+        y = window.data.MAX_Y_LOCATION - window.pin.elementHeight;
       }
 
       if (x < 0 - window.pin.elementWidth / 2) {
