@@ -11,6 +11,8 @@
   const MIN_ROOMS = 0;
   const MAX_ROOMS = 100;
 
+  const URL = `https://21.javascript.pages.academy/keksobooking`;
+
   const housingRooms = document.querySelector(`#room_number`);
   const housingGuests = document.querySelector(`#capacity`);
   const formTitle = document.querySelector(`#title`);
@@ -25,6 +27,7 @@
 
   const adForm = document.querySelector(`.ad-form`);
   const fieldsetList = adForm.querySelectorAll(`fieldset`);
+  const resetForm = document.querySelector(`.ad-form__reset`);
 
   const enableList = function (elementList) {
     for (let element of elementList) {
@@ -52,7 +55,6 @@
 
     enableList(fieldsetList);
     enableList(filterSelect);
-    window.map.inputAddress.setAttribute(`disabled`, `true`);
     window.map.inputAddress.value = getCoordinate(window.map.mainElementPin, true);
     window.form.validateGuestsAndRooms(window.form.housingGuests, window.form.housingRooms);
     window.form.setPlaceholderForPrice();
@@ -114,6 +116,41 @@
   formTimeOut.addEventListener(`change`, function () {
     setFormTime(formTimeOut, formTimeIn);
   });
+
+  const removeAllPins = () => {
+    const pins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+    for (let pin of pins) {
+      pin.remove();
+    }
+  };
+
+  const successHandler = () => {
+    deactivatePage();
+    window.map.removeAllPopups();
+    window.map.element.classList.add(`map--faded`);
+    adForm.classList.add(`ad-form--disabled`);
+    removeAllPins();
+    adForm.reset();
+    window.map.setListenerForActivePage(true);
+    window.popUps.showPopupSuccess();
+  };
+
+  const errorHandler = () => {
+    window.popUps.showPopupError();
+  };
+
+  const submitHandler = (evt) => {
+    window.loadData(URL, `POST`, successHandler, errorHandler, new FormData(adForm));
+    evt.preventDefault();
+  };
+
+  const resetFormHandler = () => {
+    adForm.reset();
+    window.map.inputAddress.value = getCoordinate(window.map.mainElementPin, true);
+  };
+
+  adForm.addEventListener(`submit`, submitHandler);
+  resetForm.addEventListener(`click`, resetFormHandler);
 
   window.form = {
     validateGuestsAndRooms,

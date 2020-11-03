@@ -2,8 +2,9 @@
 
 (() => {
   const MAX_TIMEOUT = 5000;
+  const METHOD = `POST`;
 
-  const load = (url, method, onSuccess, onError, data) => {
+  const uploadData = (url, onSuccess, onError) => {
     const xhr = new XMLHttpRequest();
 
     xhr.responseType = `json`;
@@ -12,9 +13,7 @@
       let error;
       switch (xhr.status) {
         case 200:
-          if (method === `GET`) {
-            window.data.response = xhr.response;
-          }
+          window.data.response = xhr.response;
           onSuccess(xhr.response);
           break;
         case 400:
@@ -46,15 +45,11 @@
 
     xhr.timeout = MAX_TIMEOUT;
 
-    xhr.open(method, url);
+    xhr.open(METHOD, url);
 
-    if (data) {
-      xhr.send(data);
-    } else {
-      xhr.send();
-    }
+    xhr.send();
   };
 
-  window.loadData = load;
+  window.upload = uploadData;
 })();
 
