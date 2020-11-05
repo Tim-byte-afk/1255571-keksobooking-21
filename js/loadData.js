@@ -12,9 +12,6 @@
       let error;
       switch (xhr.status) {
         case 200:
-          if (method === `GET`) {
-            window.data.response = xhr.response;
-          }
           onSuccess(xhr.response);
           break;
         case 400:

@@ -33,7 +33,7 @@
     };
 
     closeButton.addEventListener(`click`, closeButtonClickHandler);
-    closeButton.addEventListener(`keydown`, onPopupEscPress);
+    document.addEventListener(`keydown`, onPopupEscPress);
   };
 
   const showPopupSuccess = function () {
