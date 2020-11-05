@@ -25,12 +25,14 @@
   };
 
 
-  let response;
+  let responseData;
+  let modifiedData;
 
   window.data = {
     OFFER_TYPES,
     MIN_Y_LOCATION,
     MAX_Y_LOCATION,
-    response
+    response: responseData,
+    modified: modifiedData
   };
 })();

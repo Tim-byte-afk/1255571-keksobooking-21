@@ -4,11 +4,14 @@
   const START_X = 570;
   const START_Y = 375;
 
-  const URL = `https://21.javascript.pages.academy/keksobooking/data`;
-
   const map = document.querySelector(`.map`);
   const mapWidth = map.offsetWidth;
   const pinsContainer = document.querySelector(`.map__pins`);
+
+  const housingTypeFilter = document.querySelector(`#housing-type`);
+  const housingPriceFilter = document.querySelector(`#housing-price`);
+  const housingRoomsFilter = document.querySelector(`#housing-rooms`);
+  const housingGuestsFilter = document.querySelector(`#housing-guests`);
 
   const eventListenersList = () => {
     pinsContainer.addEventListener(`click`, function (evt) {
@@ -28,7 +31,7 @@
 
     if (pin) {
       const pinId = pin.dataset.id;
-      const targetOffer = window.data.response.find((offer, index) => String(index) === String(pinId - 1));
+      const targetOffer = window.data.modified.find((offer, index) => String(index) === String(pinId - 1));
       removeAllPopups();
       window.createCard(targetOffer, map);
       window.map.element.querySelector(`.popup__close`).addEventListener(`click`, function () {
@@ -53,50 +56,11 @@
   const mainMapPin = document.querySelector(`.map__pin--main`);
   const inputAddress = document.querySelector(`#address`);
 
-  const successHandler = (data) => {
-    window.form.activatePage();
-    window.pin.create(data);
-  };
-
-  const errorHandler = (text) => {
-    window.map.isFirstActivation = true;
-    window.popUps.showPopupError(text);
-  };
-
   const setStartedCoordinate = () => {
     mainMapPin.style.top = START_Y + `px`;
     mainMapPin.style.left = START_X + `px`;
     inputAddress.value = window.form.getCoordinate(mainMapPin);
   };
-
-  const setListenerForActivePage = (isFirst) => {
-    let isFirstActivation = isFirst;
-    setStartedCoordinate();
-    mainMapPin.addEventListener(`mousedown`, function (evt) {
-      if (typeof evt === `object`) {
-        switch (evt.button) {
-          case 0:
-            if (isFirstActivation) {
-              window.loadData(URL, `GET`, successHandler, errorHandler);
-              isFirstActivation = false;
-            }
-            movePin(evt);
-            break;
-        }
-      }
-    });
-
-    mainMapPin.addEventListener(`keydown`, function (evt) {
-      if (evt.key === `Enter`) {
-        if (isFirstActivation) {
-          window.loadData(URL, successHandler, errorHandler);
-          isFirstActivation = false;
-        }
-      }
-    });
-  };
-
-  setListenerForActivePage(true);
 
   const getAddress = (someElement) => {
     const width = Number(someElement.offsetWidth);
@@ -156,6 +120,35 @@
     document.addEventListener(`mouseup`, onMouseUp);
   };
 
+  const removeAllPins = () => {
+    const pins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+    for (let pin of pins) {
+      pin.remove();
+    }
+  };
+
+  const filterHandler = () => {
+    let modifiedData = window.data.response;
+    removeAllPopups();
+    removeAllPins();
+    if (housingTypeFilter.value !== `any`) {
+      modifiedData = modifiedData.filter(function (e) {
+        return String(e.offer.type) === String(housingTypeFilter.value);
+      });
+    }
+
+    if (modifiedData.length > 0) {
+      window.pin.create(modifiedData);
+    }
+
+    window.data.modified = modifiedData;
+  };
+
+  housingTypeFilter.addEventListener(`change`, filterHandler);
+  housingPriceFilter.addEventListener(`change`, filterHandler);
+  housingRoomsFilter.addEventListener(`change`, filterHandler);
+  housingGuestsFilter.addEventListener(`change`, filterHandler);
+
   window.map = {
     element: map,
     mainElementPin: mainMapPin,
@@ -163,8 +156,9 @@
     elementContainer: pinsContainer,
     eventListenersList,
     inputAddress,
-    setListenerForActivePage,
     setStartedCoordinate,
-    removeAllPopups
+    removeAllPopups,
+    movePin,
+    removeAllPins
   };
 })();

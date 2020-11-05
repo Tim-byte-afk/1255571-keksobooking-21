@@ -11,8 +11,6 @@
   const MIN_ROOMS = 0;
   const MAX_ROOMS = 100;
 
-  const URL = `https://21.javascript.pages.academy/keksobooking`;
-
   const housingRooms = document.querySelector(`#room_number`);
   const housingGuests = document.querySelector(`#capacity`);
   const formTitle = document.querySelector(`#title`);
@@ -44,12 +42,12 @@
     }
   };
 
-  const deactivatePage = function () {
+  const deactivateForm = function () {
     disableList(fieldsetList);
     disableList(filterSelect);
   };
 
-  const activatePage = function () {
+  const activate = function () {
     window.map.element.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
 
@@ -59,6 +57,7 @@
     window.form.validateGuestsAndRooms(window.form.housingGuests, window.form.housingRooms);
     window.form.setPlaceholderForPrice();
     window.map.eventListenersList();
+    checkEmptyFields();
   };
 
   const getCoordinate = function (someElement, isBottom) {
@@ -117,49 +116,44 @@
     setFormTime(formTimeOut, formTimeIn);
   });
 
-  const removeAllPins = () => {
-    const pins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-    for (let pin of pins) {
-      pin.remove();
+  formTitle.addEventListener(`input`, function () {
+    checkEmptyFields();
+  });
+
+  formPrice.addEventListener(`input`, function () {
+    checkEmptyFields();
+  });
+
+  const checkEmptyFields = () => {
+    if (formTitle.value === ``) {
+      formTitle.setCustomValidity(`Поле не может быть пустым!`);
+    } else {
+      formTitle.setCustomValidity(``);
     }
-  };
-
-  const successHandler = () => {
-    deactivatePage();
-    window.map.removeAllPopups();
-    window.map.element.classList.add(`map--faded`);
-    adForm.classList.add(`ad-form--disabled`);
-    removeAllPins();
-    adForm.reset();
-    window.map.setListenerForActivePage(true);
-    window.popUps.showPopupSuccess();
-  };
-
-  const errorHandler = () => {
-    window.popUps.showPopupError();
-  };
-
-  const submitHandler = (evt) => {
-    window.loadData(URL, `POST`, successHandler, errorHandler, new FormData(adForm));
-    evt.preventDefault();
+    if (formPrice.value === ``) {
+      formPrice.setCustomValidity(`Поле не может быть пустым!`);
+    } else {
+      formPrice.setCustomValidity(``);
+    }
   };
 
   const resetFormHandler = () => {
     adForm.reset();
-    window.map.inputAddress.value = getCoordinate(window.map.mainElementPin, true);
+    window.map.inputAddress.value = getCoordinate(window.map.mainElementPin);
   };
 
-  adForm.addEventListener(`submit`, submitHandler);
   resetForm.addEventListener(`click`, resetFormHandler);
 
   window.form = {
+    element: adForm,
     validateGuestsAndRooms,
     setPlaceholderForPrice,
     getCoordinate,
-    activatePage,
-    deactivatePage,
+    activate,
+    deactivate: deactivateForm,
     housingRooms,
     housingGuests,
     fieldsetList,
+    checkEmptyFields
   };
 })();

@@ -3,14 +3,16 @@
 (() => {
   const PIN_WIDTH = 65;
   const PIN_HEIGHT = 87;
+  const COUNT_MAX_PIN = 5;
+
   const pinTemplate = document.querySelector(`#pin`).content;
   const mapPin = pinTemplate.querySelector(`.map__pin`);
   const pinsContainer = document.querySelector(`.map__pins`);
 
   const create = function (array) {
     const fragment = document.createDocumentFragment();
-
-    for (let i = 0; i < array.length; i++) {
+    const countMax = array.length <= COUNT_MAX_PIN ? array.length : COUNT_MAX_PIN;
+    for (let i = 0; i < countMax; i++) {
       const count = i + 1;
       const targetOffer = array[i];
       const locationX = targetOffer.location.x - (PIN_WIDTH / 2);
