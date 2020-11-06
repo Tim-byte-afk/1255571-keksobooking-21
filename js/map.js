@@ -4,6 +4,21 @@
   const START_X = 570;
   const START_Y = 375;
 
+  const PRICE_TYPE = {
+    middle: {
+      min: 10000,
+      max: 50000
+    },
+    low: {
+      min: 0,
+      max: 10000
+    },
+    high: {
+      min: 50000,
+      max: 999999999
+    }
+  };
+
   const map = document.querySelector(`.map`);
   const mapWidth = map.offsetWidth;
   const pinsContainer = document.querySelector(`.map__pins`);
@@ -12,6 +27,8 @@
   const housingPriceFilter = document.querySelector(`#housing-price`);
   const housingRoomsFilter = document.querySelector(`#housing-rooms`);
   const housingGuestsFilter = document.querySelector(`#housing-guests`);
+  const housingFeaturesFilter = document.querySelector(`#housing-features`);
+  const inputHousingFeaturesFilter = housingFeaturesFilter.querySelectorAll(`input`);
 
   const eventListenersList = () => {
     pinsContainer.addEventListener(`click`, function (evt) {
@@ -31,7 +48,7 @@
 
     if (pin) {
       const pinId = pin.dataset.id;
-      const targetOffer = window.data.modified.find((offer, index) => String(index) === String(pinId - 1));
+      const targetOffer = window.data.response.find((e) => String(e.id) === String(pinId));
       removeAllPopups();
       window.createCard(targetOffer, map);
       window.map.element.querySelector(`.popup__close`).addEventListener(`click`, function () {
@@ -127,27 +144,64 @@
     }
   };
 
+  const checkFilter = (element, features) => {
+    const maxCount = 5;
+    let count = 0;
+    if (housingTypeFilter.value === `any`) {
+      count++;
+    } else if (housingTypeFilter.value !== `any` && String(element.offer.type) === String(housingTypeFilter.value)) {
+      count++;
+    }
+    if (housingGuestsFilter.value === `any`) {
+      count++;
+    } else if (housingGuestsFilter.value !== `any` && String(element.offer.guests) === String(housingGuestsFilter.value)) {
+      count++;
+    }
+    if (housingRoomsFilter.value === `any`) {
+      count++;
+    } else if (housingRoomsFilter.value !== `any` && String(element.offer.rooms) === String(housingRoomsFilter.value)) {
+      count++;
+    }
+    if (housingPriceFilter.value === `any`) {
+      count++;
+    } else if (housingPriceFilter.value !== `any` && Number(PRICE_TYPE[housingPriceFilter.value].min) < Number(element.offer.price) && Number(PRICE_TYPE[housingPriceFilter.value].max) > Number(element.offer.price)) {
+      count++;
+    }
+
+    if (Number(features.length) === 0) {
+      count++;
+    } else if (new Set(features.concat(element.offer.features)).size === Number(element.offer.features.length)) {
+      count++;
+    }
+
+    return maxCount === count;
+  };
+
   const filterHandler = () => {
-    let modifiedData = window.data.response;
+    let modifiedData;
     removeAllPopups();
     removeAllPins();
-    if (housingTypeFilter.value !== `any`) {
-      modifiedData = modifiedData.filter(function (e) {
-        return String(e.offer.type) === String(housingTypeFilter.value);
-      });
-    }
+    let features = [];
+    inputHousingFeaturesFilter.forEach((e) => {
+      if (e.checked) {
+        features.push(e.value);
+      }
+    });
+
+    modifiedData = window.data.response.filter((e) => {
+      return checkFilter(e, features);
+    });
 
     if (modifiedData.length > 0) {
       window.pin.create(modifiedData);
     }
-
-    window.data.modified = modifiedData;
   };
 
-  housingTypeFilter.addEventListener(`change`, filterHandler);
-  housingPriceFilter.addEventListener(`change`, filterHandler);
-  housingRoomsFilter.addEventListener(`change`, filterHandler);
-  housingGuestsFilter.addEventListener(`change`, filterHandler);
+  housingTypeFilter.addEventListener(`change`, window.debounce(filterHandler));
+  housingPriceFilter.addEventListener(`change`, window.debounce(filterHandler));
+  housingRoomsFilter.addEventListener(`change`, window.debounce(filterHandler));
+  housingGuestsFilter.addEventListener(`change`, window.debounce(filterHandler));
+  housingFeaturesFilter.addEventListener(`change`, window.debounce(filterHandler));
 
   window.map = {
     element: map,

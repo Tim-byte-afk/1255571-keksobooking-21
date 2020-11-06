@@ -24,15 +24,10 @@
     }
   };
 
-
-  let responseData;
-  let modifiedData;
-
   window.data = {
     OFFER_TYPES,
     MIN_Y_LOCATION,
     MAX_Y_LOCATION,
-    response: responseData,
-    modified: modifiedData
+    response: undefined
   };
 })();
