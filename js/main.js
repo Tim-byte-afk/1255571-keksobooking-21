@@ -1,7 +1,7 @@
 'use strict';
 
-const httpGetURL = `https://21.javascript.pages.academy/keksobooking/data`;
-const httpPostURL = `https://21.javascript.pages.academy/keksobooking`;
+const HTTP_GET_URL = `https://21.javascript.pages.academy/keksobooking/data`;
+const HTTP_POST_URL = `https://21.javascript.pages.academy/keksobooking`;
 
 const deactivatePage = () => {
   window.form.deactivate();
@@ -17,9 +17,12 @@ let isPageActive = false;
 
 const successHandler = (data) => {
   activatePage();
+  data.forEach((e, i) => {
+    let count = i + 1;
+    e.id = count;
+  });
   window.data.response = data;
-  window.data.modified = data;
-  window.pin.create(data);
+  window.pin.create(window.data.response);
 };
 
 const errorHandler = (text) => {
@@ -29,7 +32,7 @@ const errorHandler = (text) => {
 
 const activateMap = (evt) => {
   if (!isPageActive) {
-    window.loadData(httpGetURL, `GET`, successHandler, errorHandler);
+    window.loadData(HTTP_GET_URL, `GET`, successHandler, errorHandler);
     window.map.setStartedCoordinate();
     isPageActive = true;
   } else {
@@ -70,7 +73,7 @@ const submitErrorHandler = () => {
 };
 
 const submitHandler = (evt) => {
-  window.loadData(httpPostURL, `POST`, submitSuccessHandler, submitErrorHandler, new FormData(window.form.element));
+  window.loadData(HTTP_POST_URL, `POST`, submitSuccessHandler, submitErrorHandler, new FormData(window.form.element));
   evt.preventDefault();
 };
 

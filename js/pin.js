@@ -13,15 +13,15 @@
     const fragment = document.createDocumentFragment();
     const countMax = array.length <= COUNT_MAX_PIN ? array.length : COUNT_MAX_PIN;
     for (let i = 0; i < countMax; i++) {
-      const count = i + 1;
       const targetOffer = array[i];
+
       const locationX = targetOffer.location.x - (PIN_WIDTH / 2);
       const locationY = targetOffer.location.y - PIN_HEIGHT;
 
       const mapPinCopy = mapPin.cloneNode(true);
 
       mapPinCopy.style = `left: ` + locationX + `px; top: ` + locationY + `px;`;
-      mapPinCopy.dataset.id = count;
+      mapPinCopy.dataset.id = targetOffer.id;
       fragment.appendChild(mapPinCopy);
 
       const mapImg = mapPinCopy.querySelector(`img`);
