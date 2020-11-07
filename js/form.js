@@ -11,6 +11,12 @@ const MAX_PRICE_FORM = 1000000;
 const MIN_ROOMS = 0;
 const MAX_ROOMS = 100;
 
+const IMG_WIDTH = 70;
+const IMG_HEIGHT = 70;
+const DEFAULT_SRC = `img/muffin-grey.svg`;
+
+const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
+
 const housingRooms = document.querySelector(`#room_number`);
 const housingGuests = document.querySelector(`#capacity`);
 const formTitle = document.querySelector(`#title`);
@@ -18,6 +24,49 @@ const formPrice = document.querySelector(`#price`);
 const formTypeOfHousing = document.querySelector(`#type`);
 const formTimeIn = document.querySelector(`#timein`);
 const formTimeOut = document.querySelector(`#timeout`);
+
+const adFormAvatar = document.querySelector(`.ad-form__field input[type=file]`);
+const previewAvatar = document.querySelector(`.ad-form-header__preview img`);
+
+const adFormFoto = document.querySelector(`.ad-form__upload input[type=file]`);
+const previewFoto = document.querySelector(`.ad-form__photo`);
+
+const uploadImage = (input, preview, isImg) => {
+  const file = input.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => {
+    return fileName.endsWith(it);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener(`load`, () => {
+      if (isImg) {
+        preview.src = reader.result;
+      } else {
+        const addImg = document.createElement(`img`);
+        addImg.src = reader.result;
+        addImg.width = IMG_WIDTH;
+        addImg.height = IMG_HEIGHT;
+        preview.appendChild(addImg);
+      }
+    });
+
+    reader.readAsDataURL(file);
+  }
+};
+
+adFormAvatar.addEventListener(`change`, () => uploadImage(adFormAvatar, previewAvatar, true));
+
+adFormFoto.addEventListener(`change`, () => uploadImage(adFormFoto, previewFoto));
+
+const cleanForm = () => {
+  adForm.reset();
+  previewAvatar.src = DEFAULT_SRC;
+  previewFoto.querySelector(`img`).remove();
+};
 
 formTitle.setAttribute(`minlength`, MIN_TITLE_LENGTH);
 formTitle.setAttribute(`maxlength`, MAX_TITLE_LENGTH);
@@ -138,7 +187,8 @@ const checkEmptyFields = () => {
 };
 
 const resetFormHandler = () => {
-  adForm.reset();
+  cleanForm();
+  window.map.filterForm.reset();
   window.map.inputAddress.value = getCoordinate(window.map.mainElementPin);
 };
 
@@ -154,6 +204,7 @@ window.form = {
   housingRooms,
   housingGuests,
   fieldsetList,
-  checkEmptyFields
+  checkEmptyFields,
+  clean: cleanForm
 };
 
