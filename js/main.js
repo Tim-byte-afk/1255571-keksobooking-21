@@ -15,13 +15,12 @@ deactivatePage();
 
 let isPageActive = false;
 
-const successHandler = (data) => {
+const successHandler = (offers) => {
   activatePage();
-  data.forEach((e, i) => {
-    let count = i + 1;
-    e.id = count;
+  offers.forEach((offer, index) => {
+    offer.id = index + 1;
   });
-  window.data.response = data;
+  window.data.response = offers;
   window.pin.create(window.data.response);
 };
 
