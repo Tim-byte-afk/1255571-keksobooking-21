@@ -39,7 +39,7 @@ const activateMap = (evt) => {
   }
 };
 
-window.map.mainElementPin.addEventListener(`mousedown`, function (evt) {
+window.map.mainElementPin.addEventListener(`mousedown`, (evt) => {
   if (typeof evt === `object`) {
     switch (evt.button) {
       case 0:
@@ -49,7 +49,7 @@ window.map.mainElementPin.addEventListener(`mousedown`, function (evt) {
   }
 });
 
-window.map.mainElementPin.addEventListener(`keydown`, function (evt) {
+window.map.mainElementPin.addEventListener(`keydown`, (evt) => {
   if (evt.key === `Enter`) {
     activateMap();
   }

@@ -8,7 +8,7 @@ const pinTemplate = document.querySelector(`#pin`).content;
 const mapPin = pinTemplate.querySelector(`.map__pin`);
 const pinsContainer = document.querySelector(`.map__pins`);
 
-const create = function (array) {
+const create = (array) => {
   const fragment = document.createDocumentFragment();
   const countMax = array.length <= COUNT_MAX_PIN ? array.length : COUNT_MAX_PIN;
   for (let i = 0; i < countMax; i++) {
