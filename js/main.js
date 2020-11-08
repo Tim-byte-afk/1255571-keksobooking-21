@@ -61,7 +61,8 @@ const submitSuccessHandler = () => {
   window.map.element.classList.add(`map--faded`);
   window.form.element.classList.add(`ad-form--disabled`);
   window.map.removeAllPins();
-  window.form.element.reset();
+  window.form.clean();
+  window.map.filterForm.reset();
   window.map.setStartedCoordinate();
   window.popUps.showPopupSuccess();
   isPageActive = false;

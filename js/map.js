@@ -26,6 +26,7 @@ const map = document.querySelector(`.map`);
 const mapWidth = map.offsetWidth;
 const pinsContainer = document.querySelector(`.map__pins`);
 
+const mapFilter = document.querySelector(`.map__filters`);
 const housingTypeFilter = document.querySelector(`#housing-type`);
 const housingPriceFilter = document.querySelector(`#housing-price`);
 const housingRoomsFilter = document.querySelector(`#housing-rooms`);
@@ -211,6 +212,7 @@ housingFeaturesFilter.addEventListener(`change`, window.debounce(filterHandler))
 
 window.map = {
   element: map,
+  filterForm: mapFilter,
   mainElementPin: mainMapPin,
   elementWidth: mapWidth,
   elementContainer: pinsContainer,
