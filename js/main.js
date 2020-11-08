@@ -26,7 +26,7 @@ const successHandler = (offers) => {
 
 const errorHandler = (text) => {
   isPageActive = false;
-  window.popUps.showPopupError(text);
+  window.popUps.error(text);
 };
 
 const activateMap = (evt) => {
@@ -39,7 +39,7 @@ const activateMap = (evt) => {
   }
 };
 
-window.map.mainElementPin.addEventListener(`mousedown`, function (evt) {
+window.map.mainElementPin.addEventListener(`mousedown`, (evt) => {
   if (typeof evt === `object`) {
     switch (evt.button) {
       case 0:
@@ -49,7 +49,7 @@ window.map.mainElementPin.addEventListener(`mousedown`, function (evt) {
   }
 });
 
-window.map.mainElementPin.addEventListener(`keydown`, function (evt) {
+window.map.mainElementPin.addEventListener(`keydown`, (evt) => {
   if (evt.key === `Enter`) {
     activateMap();
   }
@@ -64,12 +64,12 @@ const submitSuccessHandler = () => {
   window.form.clean();
   window.map.filterForm.reset();
   window.map.setStartedCoordinate();
-  window.popUps.showPopupSuccess();
+  window.popUps.success();
   isPageActive = false;
 };
 
 const submitErrorHandler = () => {
-  window.popUps.showPopupError();
+  window.popUps.error();
 };
 
 const submitHandler = (evt) => {

@@ -31,7 +31,14 @@ const previewAvatar = document.querySelector(`.ad-form-header__preview img`);
 const adFormFoto = document.querySelector(`.ad-form__upload input[type=file]`);
 const previewFoto = document.querySelector(`.ad-form__photo`);
 
-const uploadImage = (input, preview, isImg) => {
+const deletePreviewFoto = () => {
+  const preview = previewFoto.querySelector(`img`);
+  if (preview) {
+    preview.remove();
+  }
+};
+
+const uploadImageHandler = (input, preview, isImg) => {
   const file = input.files[0];
   const fileName = file.name.toLowerCase();
 
@@ -46,10 +53,12 @@ const uploadImage = (input, preview, isImg) => {
       if (isImg) {
         preview.src = reader.result;
       } else {
+        deletePreviewFoto();
         const addImg = document.createElement(`img`);
         addImg.src = reader.result;
         addImg.width = IMG_WIDTH;
         addImg.height = IMG_HEIGHT;
+        addImg.alt = `Фотография жилья`;
         preview.appendChild(addImg);
       }
     });
@@ -58,14 +67,14 @@ const uploadImage = (input, preview, isImg) => {
   }
 };
 
-adFormAvatar.addEventListener(`change`, () => uploadImage(adFormAvatar, previewAvatar, true));
+adFormAvatar.addEventListener(`change`, () => uploadImageHandler(adFormAvatar, previewAvatar, true));
 
-adFormFoto.addEventListener(`change`, () => uploadImage(adFormFoto, previewFoto));
+adFormFoto.addEventListener(`change`, () => uploadImageHandler(adFormFoto, previewFoto));
 
 const cleanForm = () => {
   adForm.reset();
   previewAvatar.src = DEFAULT_SRC;
-  previewFoto.querySelector(`img`).remove();
+  deletePreviewFoto();
 };
 
 formTitle.setAttribute(`minlength`, MIN_TITLE_LENGTH);
@@ -76,7 +85,7 @@ const adForm = document.querySelector(`.ad-form`);
 const fieldsetList = adForm.querySelectorAll(`fieldset`);
 const resetForm = document.querySelector(`.ad-form__reset`);
 
-const enableList = function (elementList) {
+const enableList = (elementList) => {
   for (let element of elementList) {
     element.removeAttribute(`disabled`);
   }
@@ -85,18 +94,18 @@ const enableList = function (elementList) {
 const mapFilters = document.querySelector(`.map__filters`);
 const filterSelect = mapFilters.querySelectorAll(`select, fieldset`);
 
-const disableList = function (elementList) {
+const disableList = (elementList) => {
   for (let element of elementList) {
     element.setAttribute(`disabled`, `true`);
   }
 };
 
-const deactivateForm = function () {
+const deactivateForm = () => {
   disableList(fieldsetList);
   disableList(filterSelect);
 };
 
-const activate = function () {
+const activate = () => {
   window.map.element.classList.remove(`map--faded`);
   adForm.classList.remove(`ad-form--disabled`);
 
@@ -109,7 +118,7 @@ const activate = function () {
   checkEmptyFields();
 };
 
-const getCoordinate = function (someElement, isBottom) {
+const getCoordinate = (someElement, isBottom) => {
   const x = Number(someElement.offsetLeft);
   const y = Number(someElement.offsetTop);
   const width = Number(someElement.offsetWidth);
@@ -120,7 +129,7 @@ const getCoordinate = function (someElement, isBottom) {
   return coordinate;
 };
 
-const validateGuestsAndRooms = function (guests, rooms) {
+const validateGuestsAndRooms = (guests, rooms) => {
   const guestsNum = Number(guests.value);
   const roomsNum = Number(rooms.value);
   if (guestsNum > roomsNum && guestsNum !== MIN_ROOMS && roomsNum !== MAX_ROOMS) {
@@ -143,33 +152,33 @@ const setFormTime = (fromSelect, toSelect) => {
   toSelect.value = fromSelect.value;
 };
 
-housingGuests.addEventListener(`change`, function () {
+housingGuests.addEventListener(`change`, () => {
   validateGuestsAndRooms(housingGuests, housingRooms);
   housingRooms.reportValidity();
 });
 
-housingRooms.addEventListener(`change`, function () {
+housingRooms.addEventListener(`change`, () => {
   validateGuestsAndRooms(housingGuests, housingRooms);
   housingRooms.reportValidity();
 });
 
-formTypeOfHousing.addEventListener(`change`, function () {
+formTypeOfHousing.addEventListener(`change`, () => {
   setPlaceholderForPrice();
 });
 
-formTimeIn.addEventListener(`change`, function () {
+formTimeIn.addEventListener(`change`, () => {
   setFormTime(formTimeIn, formTimeOut);
 });
 
-formTimeOut.addEventListener(`change`, function () {
+formTimeOut.addEventListener(`change`, () => {
   setFormTime(formTimeOut, formTimeIn);
 });
 
-formTitle.addEventListener(`input`, function () {
+formTitle.addEventListener(`input`, () => {
   checkEmptyFields();
 });
 
-formPrice.addEventListener(`input`, function () {
+formPrice.addEventListener(`input`, () => {
   checkEmptyFields();
 });
 

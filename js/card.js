@@ -4,7 +4,7 @@ const cardTemplate = document.querySelector(`#card`).content;
 const mapPopup = cardTemplate.querySelector(`.popup`);
 const filtersContainer = document.querySelector(`.map__filters-container`);
 
-const createCard = function (offerData, parentContainer) {
+const createCard = (offerData, parentContainer) => {
   const rooms = offerData.offer.rooms + ` ` + window.util.declOfNum(offerData.offer.rooms, [`комната`, `комнаты`, `комнат`]);
   const guests = offerData.offer.guests + ` ` + window.util.declOfNum(offerData.offer.guests, [`гостя`, `гостей`, `гостей`]) + `.`;
   const capacityValue = rooms + ` для ` + guests;

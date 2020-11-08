@@ -34,7 +34,7 @@ const housingGuestsFilter = document.querySelector(`#housing-guests`);
 const housingFeaturesFilter = document.querySelector(`#housing-features`);
 
 const eventListenersList = () => {
-  pinsContainer.addEventListener(`click`, function (evt) {
+  pinsContainer.addEventListener(`click`, (evt) => {
     openPopup(evt);
   });
 };
@@ -54,7 +54,7 @@ const openPopup = (evt) => {
     const targetOffer = window.data.response.find((e) => String(e.id) === String(pinId));
     removeAllPopups();
     window.createCard(targetOffer, map);
-    window.map.element.querySelector(`.popup__close`).addEventListener(`click`, function () {
+    window.map.element.querySelector(`.popup__close`).addEventListener(`click`, () => {
       closePopup();
     });
     document.addEventListener(`keydown`, onPopupEscPress);
@@ -95,7 +95,7 @@ const movePin = (evt) => {
     y: evt.clientY
   };
 
-  const onMouseMove = function (moveEvt) {
+  const onMouseMove = (moveEvt) => {
     moveEvt.preventDefault();
 
     let shift = {
@@ -128,7 +128,7 @@ const movePin = (evt) => {
     inputAddress.value = getAddress(mainMapPin);
   };
 
-  const onMouseUp = function (upEvt) {
+  const onMouseUp = (upEvt) => {
     upEvt.preventDefault();
 
     document.removeEventListener(`mousemove`, onMouseMove);

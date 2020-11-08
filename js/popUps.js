@@ -6,7 +6,7 @@ const notice = document.querySelector(`.notice`);
 
 const tempSuccess = document.querySelector(`#success`).content;
 
-const showPopupError = function (value) {
+const showPopupError = (value) => {
   const fragment = document.createDocumentFragment();
   const errorPopupCopy = dataError.cloneNode(true);
   const popup = errorPopupCopy.querySelector(`.error`);
@@ -35,7 +35,7 @@ const showPopupError = function (value) {
   document.addEventListener(`keydown`, onPopupEscPress);
 };
 
-const showPopupSuccess = function () {
+const showPopupSuccess = () => {
   const fragment = document.createDocumentFragment();
   const successPopupCopy = tempSuccess.cloneNode(true);
   const popup = successPopupCopy.querySelector(`.success`);
@@ -58,6 +58,6 @@ const showPopupSuccess = function () {
 };
 
 window.popUps = {
-  showPopupError,
-  showPopupSuccess
+  error: showPopupError,
+  success: showPopupSuccess
 };
