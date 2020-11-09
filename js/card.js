@@ -5,8 +5,8 @@ const mapPopup = cardTemplate.querySelector(`.popup`);
 const filtersContainer = document.querySelector(`.map__filters-container`);
 
 const createCard = (offerData, parentContainer) => {
-  const rooms = offerData.offer.rooms + ` ` + window.util.declOfNum(offerData.offer.rooms, [`комната`, `комнаты`, `комнат`]);
-  const guests = offerData.offer.guests + ` ` + window.util.declOfNum(offerData.offer.guests, [`гостя`, `гостей`, `гостей`]) + `.`;
+  const rooms = offerData.offer.rooms + ` ` + window.utilDecline(offerData.offer.rooms, [`комната`, `комнаты`, `комнат`]);
+  const guests = offerData.offer.guests + ` ` + window.utilDecline(offerData.offer.guests, [`гостя`, `гостей`, `гостей`]) + `.`;
   const capacityValue = rooms + ` для ` + guests;
 
   const typeOfHousing = window.data.OFFER_TYPES[offerData.offer.type].label;

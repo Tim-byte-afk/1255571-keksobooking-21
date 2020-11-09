@@ -5,6 +5,13 @@ const HTTP_POST_URL = `https://21.javascript.pages.academy/keksobooking`;
 
 const deactivatePage = () => {
   window.form.deactivate();
+  window.map.removeAllPopups();
+  window.map.element.classList.add(`map--faded`);
+  window.form.element.classList.add(`ad-form--disabled`);
+  window.map.removeAllPins();
+  window.form.clean();
+  window.map.filterForm.reset();
+  window.map.setStartedCoordinate();
 };
 
 const activatePage = () => {
@@ -57,13 +64,6 @@ window.map.mainElementPin.addEventListener(`keydown`, (evt) => {
 
 const submitSuccessHandler = () => {
   deactivatePage();
-  window.map.removeAllPopups();
-  window.map.element.classList.add(`map--faded`);
-  window.form.element.classList.add(`ad-form--disabled`);
-  window.map.removeAllPins();
-  window.form.clean();
-  window.map.filterForm.reset();
-  window.map.setStartedCoordinate();
   window.popUps.showPopupSuccess();
   isPageActive = false;
 };
@@ -76,5 +76,12 @@ const submitHandler = (evt) => {
   window.loadData(HTTP_POST_URL, `POST`, submitSuccessHandler, submitErrorHandler, new FormData(window.form.element));
   evt.preventDefault();
 };
+
+const resetFormHandler = () => {
+  deactivatePage();
+  isPageActive = false;
+};
+
+window.form.reset.addEventListener(`click`, resetFormHandler);
 
 window.form.element.addEventListener(`submit`, submitHandler);

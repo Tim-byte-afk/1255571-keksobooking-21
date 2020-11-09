@@ -21,18 +21,25 @@ const showPopupError = (value) => {
   fragment.appendChild(errorPopupCopy);
   main.insertBefore(fragment, notice);
 
+  const removeListener = () => {
+    closeButton.removeEventListener(`click`, closeButtonClickHandler);
+    document.removeEventListener(`keydown`, popupEscPressHandler);
+  };
+
   const closeButtonClickHandler = () => {
     popup.remove();
+    removeListener();
   };
-  const onPopupEscPress = (evt) => {
+  const popupEscPressHandler = (evt) => {
     if (evt.key === `Escape`) {
       evt.preventDefault();
       popup.remove();
+      removeListener();
     }
   };
 
   closeButton.addEventListener(`click`, closeButtonClickHandler);
-  document.addEventListener(`keydown`, onPopupEscPress);
+  document.addEventListener(`keydown`, popupEscPressHandler);
 };
 
 const showPopupSuccess = () => {
@@ -43,18 +50,25 @@ const showPopupSuccess = () => {
   fragment.appendChild(successPopupCopy);
   main.insertBefore(fragment, notice);
 
+  const removeListener = () => {
+    document.removeEventListener(`click`, closeButtonClickHandler);
+    document.removeEventListener(`keydown`, popupEscPressHandler);
+  };
+
   const closeButtonClickHandler = () => {
     popup.remove();
+    removeListener();
   };
-  const onPopupEscPress = (evt) => {
+  const popupEscPressHandler = (evt) => {
     if (evt.key === `Escape`) {
       evt.preventDefault();
       popup.remove();
+      removeListener();
     }
   };
 
   document.addEventListener(`click`, closeButtonClickHandler);
-  document.addEventListener(`keydown`, onPopupEscPress);
+  document.addEventListener(`keydown`, popupEscPressHandler);
 };
 
 window.popUps = {

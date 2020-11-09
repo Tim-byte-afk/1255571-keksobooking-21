@@ -77,27 +77,27 @@ const cleanForm = () => {
   deletePreviewFoto();
 };
 
-formTitle.setAttribute(`minlength`, MIN_TITLE_LENGTH);
-formTitle.setAttribute(`maxlength`, MAX_TITLE_LENGTH);
-formPrice.setAttribute(`max`, MAX_PRICE_FORM);
+formTitle.minLength = MIN_TITLE_LENGTH;
+formTitle.maxLength = MAX_TITLE_LENGTH;
+formPrice.max = MAX_PRICE_FORM;
 
 const adForm = document.querySelector(`.ad-form`);
 const fieldsetList = adForm.querySelectorAll(`fieldset`);
 const resetForm = document.querySelector(`.ad-form__reset`);
 
 const enableList = (elementList) => {
-  for (let element of elementList) {
-    element.removeAttribute(`disabled`);
-  }
+  elementList.forEach((element) => {
+    element.disabled = false;
+  });
 };
 
 const mapFilters = document.querySelector(`.map__filters`);
 const filterSelect = mapFilters.querySelectorAll(`select, fieldset`);
 
 const disableList = (elementList) => {
-  for (let element of elementList) {
-    element.setAttribute(`disabled`, `true`);
-  }
+  elementList.forEach((element) => {
+    element.disabled = true;
+  });
 };
 
 const deactivateForm = () => {
@@ -133,11 +133,11 @@ const validateGuestsAndRooms = (guests, rooms) => {
   const guestsNum = Number(guests.value);
   const roomsNum = Number(rooms.value);
   if (guestsNum > roomsNum && guestsNum !== MIN_ROOMS && roomsNum !== MAX_ROOMS) {
-    rooms.setCustomValidity(`Количество комнат меньше кол-ва гостей на ` + (guestsNum - roomsNum));
+    guests.setCustomValidity(`Количество гостей больше кол-ва комнат на ` + (guestsNum - roomsNum));
   } else if ((guestsNum === MIN_ROOMS && roomsNum !== MAX_ROOMS) || (roomsNum === MAX_ROOMS && guestsNum !== MIN_ROOMS)) {
-    rooms.setCustomValidity(`Неверное значение.`);
+    guests.setCustomValidity(`Неверное значение.`);
   } else {
-    rooms.setCustomValidity(``);
+    guests.setCustomValidity(``);
   }
 };
 
@@ -154,12 +154,12 @@ const setFormTime = (fromSelect, toSelect) => {
 
 housingGuests.addEventListener(`change`, () => {
   validateGuestsAndRooms(housingGuests, housingRooms);
-  housingRooms.reportValidity();
+  housingGuests.reportValidity();
 });
 
 housingRooms.addEventListener(`change`, () => {
   validateGuestsAndRooms(housingGuests, housingRooms);
-  housingRooms.reportValidity();
+  housingGuests.reportValidity();
 });
 
 formTypeOfHousing.addEventListener(`change`, () => {
@@ -195,14 +195,6 @@ const checkEmptyFields = () => {
   }
 };
 
-const resetFormHandler = () => {
-  cleanForm();
-  window.map.filterForm.reset();
-  window.map.inputAddress.value = getCoordinate(window.map.mainElementPin);
-};
-
-resetForm.addEventListener(`click`, resetFormHandler);
-
 window.form = {
   element: adForm,
   validateGuestsAndRooms,
@@ -214,6 +206,7 @@ window.form = {
   housingGuests,
   fieldsetList,
   checkEmptyFields,
-  clean: cleanForm
+  clean: cleanForm,
+  reset: resetForm
 };
 

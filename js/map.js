@@ -23,15 +23,14 @@ const MAX_COUNT_CHECKS = 5;
 const BASE_FILTER_VALUE = `any`;
 
 const map = document.querySelector(`.map`);
-const mapWidth = map.offsetWidth;
 const pinsContainer = document.querySelector(`.map__pins`);
 
 const mapFilter = document.querySelector(`.map__filters`);
-const housingTypeFilter = document.querySelector(`#housing-type`);
-const housingPriceFilter = document.querySelector(`#housing-price`);
-const housingRoomsFilter = document.querySelector(`#housing-rooms`);
-const housingGuestsFilter = document.querySelector(`#housing-guests`);
-const housingFeaturesFilter = document.querySelector(`#housing-features`);
+const housingTypeFilter = mapFilter.querySelector(`#housing-type`);
+const housingPriceFilter = mapFilter.querySelector(`#housing-price`);
+const housingRoomsFilter = mapFilter.querySelector(`#housing-rooms`);
+const housingGuestsFilter = mapFilter.querySelector(`#housing-guests`);
+const housingFeaturesFilter = mapFilter.querySelector(`#housing-features`);
 
 const eventListenersList = () => {
   pinsContainer.addEventListener(`click`, (evt) => {
@@ -39,7 +38,7 @@ const eventListenersList = () => {
   });
 };
 
-const onPopupEscPress = (evt) => {
+const popupEscPressHandler = (evt) => {
   if (evt.key === `Escape`) {
     evt.preventDefault();
     closePopup();
@@ -54,16 +53,17 @@ const openPopup = (evt) => {
     const targetOffer = window.data.response.find((e) => String(e.id) === String(pinId));
     removeAllPopups();
     window.createCard(targetOffer, map);
-    window.map.element.querySelector(`.popup__close`).addEventListener(`click`, () => {
+    const popupToClose = window.map.element.querySelector(`.map__card`);
+    popupToClose.querySelector(`.popup__close`).addEventListener(`click`, () => {
       closePopup();
     });
-    document.addEventListener(`keydown`, onPopupEscPress);
+    document.addEventListener(`keydown`, popupEscPressHandler);
   }
 };
 
 const closePopup = () => {
   removeAllPopups();
-  document.removeEventListener(`keydown`, onPopupEscPress);
+  document.removeEventListener(`keydown`, popupEscPressHandler);
 };
 
 const removeAllPopups = () => {
@@ -95,7 +95,7 @@ const movePin = (evt) => {
     y: evt.clientY
   };
 
-  const onMouseMove = (moveEvt) => {
+  const mouseMoveHandler = (moveEvt) => {
     moveEvt.preventDefault();
 
     let shift = {
@@ -128,23 +128,23 @@ const movePin = (evt) => {
     inputAddress.value = getAddress(mainMapPin);
   };
 
-  const onMouseUp = (upEvt) => {
+  const mouseUpHandler = (upEvt) => {
     upEvt.preventDefault();
 
-    document.removeEventListener(`mousemove`, onMouseMove);
-    document.removeEventListener(`mouseup`, onMouseUp);
+    document.removeEventListener(`mousemove`, mouseMoveHandler);
+    document.removeEventListener(`mouseup`, mouseMoveHandler);
     inputAddress.value = getAddress(mainMapPin);
   };
 
-  document.addEventListener(`mousemove`, onMouseMove);
-  document.addEventListener(`mouseup`, onMouseUp);
+  document.addEventListener(`mousemove`, mouseMoveHandler);
+  document.addEventListener(`mouseup`, mouseUpHandler);
 };
 
 const removeAllPins = () => {
   const pins = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-  for (let pin of pins) {
+  pins.forEach((pin) => {
     pin.remove();
-  }
+  });
 };
 
 const checkFilter = (element, features) => {
@@ -153,21 +153,29 @@ const checkFilter = (element, features) => {
     count++;
   } else if (String(element.offer.type) === String(housingTypeFilter.value)) {
     count++;
+  } else {
+    return false;
   }
   if (housingGuestsFilter.value === BASE_FILTER_VALUE) {
     count++;
   } else if (String(element.offer.guests) === String(housingGuestsFilter.value)) {
     count++;
+  } else {
+    return false;
   }
   if (housingRoomsFilter.value === BASE_FILTER_VALUE) {
     count++;
   } else if (String(element.offer.rooms) === String(housingRoomsFilter.value)) {
     count++;
+  } else {
+    return false;
   }
   if (housingPriceFilter.value === BASE_FILTER_VALUE) {
     count++;
   } else if (Number(PRICE_TYPE[housingPriceFilter.value].min) < Number(element.offer.price) && Number(PRICE_TYPE[housingPriceFilter.value].max) > Number(element.offer.price)) {
     count++;
+  } else {
+    return false;
   }
 
   if (Number(features.length) === 0) {
@@ -214,7 +222,6 @@ window.map = {
   element: map,
   filterForm: mapFilter,
   mainElementPin: mainMapPin,
-  elementWidth: mapWidth,
   elementContainer: pinsContainer,
   eventListenersList,
   inputAddress,
